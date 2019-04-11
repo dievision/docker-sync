@@ -9,7 +9,26 @@ class Dev < Stack
       perform_copy(actions) if actions.has_key?("extra_commands")
     end
 
-    # start # from docker-sync-stack start
+    start # from docker-sync-stack start
+  end
+
+  desc 'down', 'stops all running containers'
+  def down
+    command = 'docker stop $(docker ps -q)'
+    say_status 'stopping', command, :red
+  end
+
+  desc 'start', 'restart one specific container'
+  def restart(*args)
+    $stderr.puts "__________________#{options.inspect}"
+    $stderr.puts "__________________#{args.inspect}"
+    args.each do |container|
+      container_id = `docker ps -a --filter "name=_#{container}" --last 1 -q`
+
+      $stderr.puts "__________________#{`docker inspect --format='{{.LogPath}}' #{container_id}`}"
+    end
+    # sudo sh -c "echo \"\" > $(docker inspect --format='{{.LogPath}}' $(docker ps -a --filter "name=_$1" --last 1 -q))"
+    # docker-compose restart $1
   end
 
   private
