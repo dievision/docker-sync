@@ -16,6 +16,7 @@ class Dev < Stack
   def down
     command = 'docker stop $(docker ps -q)'
     say_status 'stopping', command, :red
+    exec command
   end
 
   desc 'start', 'restart one specific container'
