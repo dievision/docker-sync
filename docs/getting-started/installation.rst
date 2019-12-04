@@ -10,6 +10,25 @@ No matter if its OSX/Linux/Windows
 
 Depending on the OS, you might need more steps to setup. Continue reading below.
 
+Installation as non-root
+========================
+
+You may elect to install ``docker-sync`` as a non-root user.  To install as the current user:
+
+.. code-block:: shell
+
+    gem install --user-install docker-sync
+
+Then set-up your shell to add the ``docker-sync`` command to the ``PATH``.  Edit ``.bashrc``:
+
+.. code-block:: shell
+
+    if which ruby >/dev/null && which gem >/dev/null; then
+      PATH="$(ruby -r rubygems -e 'puts Gem.user_dir')/bin:$PATH"
+    fi
+
+... then start a new shell and run ``docker-sync``.
+
 ----
 
 .. _installation-osx:
@@ -201,7 +220,7 @@ Then type the following command in your WSL shell.
 
 9. Compile and install OCaml
 
-Before doing this please check out first the OCaml release changelog and ensure that the OCaml version that you are going to install is compatible. (https://github.com/ocaml/ocaml/releases)
+Before doing this please check out first the eugenmayer/unison dockerfile and ensure that the OCaml version that you are going to install is the same. To find the required OCaml version, do a search for "ocaml" within the eugenmayer/unison's dockerfile (https://github.com/EugenMayer/docker-image-unison/blob/master/Dockerfile)
 
 Install build script
 
@@ -214,9 +233,9 @@ As for now the procedure is as follows:
 .. code-block:: shell
 
     sudo apt-get install make
-    wget http://caml.inria.fr/pub/distrib/ocaml-4.06/ocaml-4.06.0.tar.gz
-    tar xvf ocaml-4.06.0.tar.gz
-    cd ocaml-4.06.0
+    wget http://caml.inria.fr/pub/distrib/ocaml-4.08/ocaml-4.08.1.tar.gz
+    tar xvf ocaml-4.08.1.tar.gz
+    cd ocaml-4.08.1
     ./configure
     make world
     make opt
@@ -235,6 +254,9 @@ As for now the procedure is as follows:
     wget https://github.com/bcpierce00/unison/archive/v2.51.2.tar.gz
     tar xvf v2.51.2.tar.gz
     cd unison-2.51.2
+    # The implementation src/system.ml does not match the interface system.cmi:curl and needs to be patched
+    curl https://github.com/bcpierce00/unison/commit/23fa1292.diff?full_index=1 -o patch.diff
+    git apply patch.diff
     make UISTYLE=text
     sudo cp src/unison /usr/local/bin/unison
     sudo cp src/unison-fsmonitor /usr/local/bin/unison-fsmonitor
